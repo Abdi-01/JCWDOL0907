@@ -58,6 +58,7 @@ module.exports = {
 
       return res.status(200).send({ data: addUserResult, message: "Register success" });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   },

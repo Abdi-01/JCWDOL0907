@@ -5,11 +5,12 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, Stack } from "@chakra-ui/react";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { Icon, SearchIcon } from "@chakra-ui/icons";
-import { Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem, Divider } from "@chakra-ui/react";
 import { BsFillCartFill } from "react-icons/bs";
 import { GrLocation } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { resetUser } from "../features/userSlice";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from "@chakra-ui/react";
 
 const navigation = [
   { name: "Home", href: "/", current: true },
@@ -24,6 +25,7 @@ const Navbar = () => {
   const locationGlobal = useSelector((state) => state.location.location);
   const userGlobal = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Disclosure as="nav" className="bg-white color-gray sticky top-0 z-50 drop-shadow-md">
@@ -95,17 +97,33 @@ const Navbar = () => {
                         </MenuButton>
                         <MenuList>
                           <MenuItem>Profile</MenuItem>
-                          <MenuItem
-                            onClick={() => {
-                              alert("logging out");
-                              dispatch(resetUser());
-                              nav("/");
-                            }}
-                          >
-                            Logout
-                          </MenuItem>
+                          <MenuItem>Orders</MenuItem>
+                          <MenuItem onClick={onOpen}>Logout</MenuItem>
                         </MenuList>
                       </Menu>
+
+                      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} isCentered>
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalHeader>Are you sure you want to logout?</ModalHeader>
+                          <ModalCloseButton />
+
+                          <ModalFooter>
+                            <Button
+                              colorScheme="red"
+                              mr={3}
+                              onClick={() => {
+                                alert("logging out");
+                                dispatch(resetUser());
+                                nav("/");
+                              }}
+                            >
+                              Logout
+                            </Button>
+                            <Button onClick={onClose}>Cancel</Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
                     </>
                   ) : (
                     //when user is logged out
@@ -153,19 +171,37 @@ const Navbar = () => {
                   {item.name}
                 </Disclosure.Button>
               ))}
-              <Disclosure.Button className="mx-2">
-                {userGlobal.user_id > 0 ? (
-                  //when user is logged in
-                  <>
-                    <Menu>
-                      <MenuButton as={Button} size="sm" variant="solid" colorScheme="green">
-                        {/* <Icon as={GrUser} mr="1" color="white" /> */}
-                        <span />
-                        Hi, {userGlobal.name}!
-                      </MenuButton>
-                      <MenuList>
-                        <MenuItem>Profile</MenuItem>
-                        <MenuItem
+
+              <hr className="border-3" />
+              {userGlobal.user_id > 0 ? (
+                //when user is logged in
+                <>
+                  <Disclosure.Button as="a" className="text-green-700 block px-3 py-2 text-base font-medium">
+                    Hi, {userGlobal.name}!
+                  </Disclosure.Button>
+
+                  <Disclosure.Button as="a" className="text-gray-500 block px-3 py-2 text-base font-medium">
+                    Profile
+                  </Disclosure.Button>
+
+                  <Disclosure.Button as="a" className="text-gray-500 block px-3 py-2 text-base font-medium">
+                    Orders
+                  </Disclosure.Button>
+
+                  <Disclosure.Button as="a" className="text-gray-500 block px-3 py-2 text-base font-medium" onClick={onOpen}>
+                    Logout
+                  </Disclosure.Button>
+
+                  <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} isCentered>
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Are you sure you want to logout?</ModalHeader>
+                      <ModalCloseButton />
+
+                      <ModalFooter>
+                        <Button
+                          colorScheme="red"
+                          mr={3}
                           onClick={() => {
                             alert("logging out");
                             dispatch(resetUser());
@@ -173,13 +209,16 @@ const Navbar = () => {
                           }}
                         >
                           Logout
-                        </MenuItem>
-                      </MenuList>
-                    </Menu>
-                  </>
-                ) : (
-                  //when user is logged out
-                  <>
+                        </Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+                </>
+              ) : (
+                //when user is logged out
+                <>
+                  <Disclosure.Button className="mx-2">
                     <Stack direction="row" spacing={1}>
                       <Button
                         colorScheme="green"
@@ -203,9 +242,9 @@ const Navbar = () => {
                         Register
                       </Button>
                     </Stack>
-                  </>
-                )}
-              </Disclosure.Button>
+                  </Disclosure.Button>
+                </>
+              )}
             </div>
           </Disclosure.Panel>
         </>

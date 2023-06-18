@@ -6,6 +6,9 @@ const transporter = nodemailer.createTransport({
     user: "ichsannuriman12@gmail.com",
     pass: "zsflnyniejbhwxzg",
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 module.exports = transporter;

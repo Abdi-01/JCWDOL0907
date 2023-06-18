@@ -9,6 +9,7 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { GrLocation, GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { resetAdmin } from "../features/adminSlice";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalCloseButton, useDisclosure } from "@chakra-ui/react";
 
 const navigation = [
   { name: "Dashboard", href: "/AdminDashboard", current: true },
@@ -22,6 +23,7 @@ const AdminNavbar = () => {
   const nav = useNavigate();
   const adminGlobal = useSelector((state) => state.admin.admin);
   const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Disclosure as="nav" className="bg-white color-gray sticky top-0 z-50 drop-shadow-md">
@@ -72,20 +74,35 @@ const AdminNavbar = () => {
                   </MenuButton>
                   <MenuList>
                     <MenuItem>Profile</MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        alert("logging out");
-                        dispatch(resetAdmin());
-                        nav("/");
-                      }}
-                    >
-                      Logout
-                    </MenuItem>
+                    <MenuItem onClick={onOpen}>Logout</MenuItem>
                   </MenuList>
                 </Menu>
               </div>
             </div>
           </div>
+
+          <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} isCentered>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Are you sure you want to logout?</ModalHeader>
+              <ModalCloseButton />
+
+              <ModalFooter>
+                <Button
+                  colorScheme="red"
+                  mr={3}
+                  onClick={() => {
+                    alert("logging out");
+                    dispatch(resetAdmin());
+                    nav("/");
+                  }}
+                >
+                  Logout
+                </Button>
+                <Button onClick={onClose}>Cancel</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
 
           <Disclosure.Panel className="sm:hidden">
             <div className="space-y-2 px-2 pb-4 pt-2">
