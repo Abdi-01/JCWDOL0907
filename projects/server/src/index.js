@@ -1,22 +1,9 @@
 const { join } = require("path");
-require("dotenv").config({ path: join(__dirname, "../.env") });
+require('dotenv').config({ path: join(__dirname, '../.env') });
 const express = require("express");
 const cors = require("cors");
-const {
-  adminAuthRoutes,
-  authRoutes,
-  adminCategoryRoutes,
-  storeRoutes,
-  addressRoutes,
-  cityRoutes,
-  provinceRoutes,
-  adminProductRoutes } = require("./routes");
-const path = require("path");
 
-require("./config/db.js");
-
-// const PORT = process.env.PORT || 8000;
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(cors());
 
@@ -35,15 +22,6 @@ app.get("/api/greetings", (req, res, next) => {
 });
 // ===========================
 // NOTE : Add your routes here
-app.use("/uploads", express.static(join(__dirname, "uploads")));
-app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminAuthRoutes);
-app.use("/api/admin/products", adminCategoryRoutes);
-app.use("/api", storeRoutes);
-app.use("/api/addresses", addressRoutes);
-app.use("/api/cities", cityRoutes);
-app.use("/api/provinces", provinceRoutes);
-app.use('/api/admin/products', adminProductRoutes);
 
 // ===========================
 
@@ -59,8 +37,8 @@ app.use((req, res, next) => {
 // error
 app.use((err, req, res, next) => {
   if (req.path.includes("/api/")) {
-    console.error("Error : ", err);
-    res.status(err.status_code).send(err.message);
+    console.error("Error : ", err.stack);
+    res.status(500).send("Error !");
   } else {
     next();
   }
