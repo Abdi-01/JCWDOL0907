@@ -84,7 +84,7 @@ const OrderItem = ({ order_id, order_date, shipping_courier, shipping_type, ship
             <Text className="text-gray-400 font-bold">{order_status}</Text>
           </div>
 
-          <Text className="text-sm text-gray-400">Order made: {Date(order_date).toLocaleString("id-ID")}</Text>
+          <Text className="text-sm text-gray-400">Order made: {order_date}</Text>
         </CardHeader>
 
         <CardBody>
@@ -96,7 +96,7 @@ const OrderItem = ({ order_id, order_date, shipping_courier, shipping_type, ship
 
             <Box className="flex justify-between">
               <Heading size="sm">Shipping</Heading>
-              <div>
+              <div className="text-right">
                 {formatRupiah(shipping_price)}
                 <div className="text-xs font-bold text-green-500 ">
                   {shipping_courier.toUpperCase()} - {shipping_type}
